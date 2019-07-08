@@ -70,7 +70,7 @@
           id="actual-file"
           disabled="disabled"
         />
-        <input type="button" value="Choose a folder" id="select-file" />`;
+        <input type="button" value="Choose Adobe Extensions folder" id="select-file" />`;
         document.getElementById("select-file").addEventListener(
           "click",
           function() {
@@ -85,7 +85,7 @@
                 } else {
                   console.log(fileNames);
                   document.getElementById("actual-file").value = fileNames[0];
-                  destination = fileNames[0];
+                  destination = fileNames[0] + "/adstream/";
                 }
               }
             );
