@@ -55,7 +55,7 @@
       } else {
         console.log("windows");
         exec(
-          "regedit > HKEY_CURRENT_USER/Software/Adobe/CSXS.8",
+          "reg add HKEY_CURRENT_USER\Software\Adobe\CSXS.8 /v PlayerDebugMode /t REG_SZ /d 1",
           (err, stdout, stderr) => {
             if (err) {
               // node couldn't execute the command
