@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Adstream Plugin Installer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="main">
+      <div style="text-align:center;">
+        <input
+          type="text"
+          placeholder="Please select a adstream folder"
+          id="source-file"
+          disabled="disabled"
+        />
+        <input
+          type="button"
+          value="Choose a adstream plugin folder"
+          id="adstream-file"
+        />`
+      </div>
+      <div style="text-align:center;" id="select"></div>
+      <div style="text-align:center;">
+        <input type="button" value="Install" id="crack-it" />
+      </div>
+    </div>
+
+    <script>
+      const { dialog } = require("electron").remote;
+      var fs = require("fs");
+      var os = require("os");
+      // // var eNotify = require("electron-notify");
+      // const smalltalk = require("smalltalk/native");
+      console.log(os.homedir());
+      var ncp = require("ncp").ncp;
+      var destination = "";
+      var source = "";
+      const { exec } = require("child_process");
+      if (os.platform() == "darwin") {
+        console.log("mac");
+        destination =
+          os.homedir() +
+          "/Library/Application Support/Adobe/CEP/extensions/adstream/";
+        exec(
+          "defaults write com.adobe.CSXS.8 PlayerDebugMode 1",
+          (err, stdout, stderr) => {
+            if (err) {
+              // node couldn't execute the command
+              console.log("Error", err);
+              return;
+            }
+          }
+        );
+      } else {
+        console.log("windows");
+        exec(
+          "regedit > HKEY_CURRENT_USER/Software/Adobe/CSXS.8",
+          (err, stdout, stderr) => {
+            if (err) {
+              // node couldn't execute the command
+              console.log("Error", err);
+              return;
+            }
+          }
+        );
+        document.getElementById("select").innerHTML = `<input
+          type="text"
+          placeholder="Please select a destination folder"
+          id="actual-file"
+          disabled="disabled"
+        />
+        <input type="button" value="Choose a folder" id="select-file" />`;
+        document.getElementById("select-file").addEventListener(
+          "click",
+          function() {
+            dialog.showOpenDialog(
+              {
+                title: "Select a folder",
+                properties: ["openDirectory"]
+              },
+              function(fileNames) {
+                if (fileNames === undefined) {
+                  console.log("No file selected");
+                } else {
+                  console.log(fileNames);
+                  document.getElementById("actual-file").value = fileNames[0];
+                  destination = fileNames[0];
+                }
+              }
+            );
+          },
+          false
+        );
+      }
+      document.getElementById("adstream-file").addEventListener(
+        "click",
+        function() {
+          dialog.showOpenDialog(
+            {
+              title: "Select Adstream folder",
+              properties: ["openDirectory"]
+            },
+            function(fileNames) {
+              if (fileNames === undefined) {
+                console.log("No file selected");
+              } else {
+                console.log(fileNames);
+                document.getElementById("source-file").value = fileNames[0];
+                source = fileNames[0];
+              }
+            }
+          );
+        },
+        false
+      );
+      document.getElementById("crack-it").addEventListener(
+        "click",
+        function() {
+          ncp(source, destination, function(err) {
+            if (err) {
+              return console.error(err);
+            }
+            dialog.showMessageBox(
+              null,
+              {
+                type: "info",
+                title: "Adstream Plugin",
+                message: "The Adstream plugin has been installed successfully"
+              },
+              (response, checkboxChecked) => {
+                console.log(response);
+                console.log(checkboxChecked);
+              }
+            );
+            console.log("Done!");
+          });
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
